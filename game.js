@@ -184,6 +184,27 @@ function update() {
     for (let i = enemies.length - 1; i >= 0; i--) {
         enemies[i].y += enemies[i].speed;
         
+        // Check collision with player
+        let e = enemies[i];
+        let px = player.x + 20;
+        let py = player.y + 20;
+        let dist = Math.sqrt((e.x + 15 - px) ** 2 + (e.y + 15 - py) ** 2);
+        
+        if (dist < 35) {
+            // Player hit!
+            lives--;
+            livesEl.innerText = '❤️'.repeat(lives);
+            playSound('hit');
+            enemies.splice(i, 1);
+            
+            if (lives <= 0) {
+                gameOver = true;
+                playSound('gameover');
+                document.getElementById('instructions').innerText = 'Game Over! Score: ' + score + '. Press Space to restart.';
+            }
+            continue;
+        }
+        
         if (enemies[i].y > canvas.height + 30) {
             enemies.splice(i, 1);
         }
