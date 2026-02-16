@@ -1,6 +1,6 @@
 <div align="center">
 
-# Space Paw Shooter 🚀🐾
+# Space Paw Shooter
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -9,60 +9,74 @@
 
 **A top-down space shooter game built with HTML5 Canvas**
 
-[Play Now](https://alfredang.github.io/space-paw-shooter) · [Report Bug](https://github.com/alfredang/space-paw-shooter/issues) · [Request Feature](https://github.com/alfredang/space-paw-shooter/issues)
+[Live Demo](https://alfredang.github.io/space-paw-shooter) · [Report Bug](https://github.com/alfredang/space-paw-shooter/issues) · [Request Feature](https://github.com/alfredang/space-paw-shooter/issues)
 
 </div>
 
+## Screenshot
+
+![Screenshot](screenshot.png)
+
 ## About
 
-Space Paw Shooter is a fun arcade-style game where you pilot a cat-shaped spaceship through a cosmic battlefield. Destroy alien invaders, survive as long as you can, and aim for the high score!
+Space Paw Shooter is a fun arcade-style space shooter game where you pilot a cat-shaped spaceship through a cosmic battlefield. Destroy alien invaders, survive as long as you can, and aim for the high score!
 
 ### Key Features
 
-- 🐾 Cute cat-shaped player ship
-- 👾 Alien enemies with animated movements
+- 🐾 Cute cat-shaped player ship with ears and eyes
+- 👾 Green alien enemies with animated movements
 - ⭐ Scrolling starfield background
-- 🔫 Laser shooting with sound effects
-- 💥 Explosion sounds on hits
+- 🔫 Laser shooting with sound effects (Web Audio API)
+- 💥 Explosion sounds when hitting enemies
 - ❤️ 3-life survival system
-- 🎮 Progressive difficulty
-
-## How to Play
-
-1. Press **Space** to start the game
-2. Use **Arrow Keys** to move your ship
-3. Press **Space** to shoot lasers
-4. Destroy aliens to earn points (+100 each)
-5. Avoid collisions with aliens
-6. Game over when all 3 lives are lost
-
-## Controls
-
-| Action | Input |
-|--------|-------|
-| Start Game | Space |
-| Move Ship | Arrow Keys (Up/Down/Left/Right) |
-| Shoot | Space |
-| Restart | Space (after game over) |
+- 🎮 Progressive difficulty with random enemy spawning
+- 🚀 Built entirely with HTML5 Canvas and vanilla JavaScript
 
 ## Tech Stack
 
 | Category | Technology |
 |----------|------------|
 | Frontend | HTML5, CSS3, JavaScript |
-| Graphics | HTML5 Canvas |
+| Graphics | HTML5 Canvas API |
 | Audio | Web Audio API |
 | Deployment | GitHub Pages |
 | Workflow | GitHub Actions |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────┐
+│              Game Canvas                 │
+│  ┌─────────────────────────────────┐   │
+│  │     Player Ship (Cat)           │   │
+│  │     • Movement (Arrow Keys)     │   │
+│  │     • Shooting (Space)           │   │
+│  └─────────────────────────────────┘   │
+│                                          │
+│  ┌─────────────────────────────────┐   │
+│  │     Enemies (Aliens)            │   │
+│  │     • Random spawning            │   │
+│  │     • Collision detection       │   │
+│  └─────────────────────────────────┘   │
+│                                          │
+│  ┌─────────────────────────────────┐   │
+│  │     Audio System                 │   │
+│  │     • Shoot sound               │   │
+│  │     • Hit sound                │   │
+│  │     • Game over sound           │   │
+│  └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
+```
 
 ## Project Structure
 
 ```
 space-paw-shooter/
-├── index.html          # Main game HTML
-├── game.js             # Game logic & rendering
-├── style.css           # Game styling
-├── README.md           # This file
+├── index.html          # Main game HTML structure
+├── game.js            # Game logic, rendering, collision detection
+├── style.css          # Game styling and animations
+├── README.md          # This file
+├── screenshot.png     # Game screenshot
 └── .github/
     └── workflows/
         └── deploy.yml  # GitHub Actions deployment
@@ -109,6 +123,24 @@ npx serve .
 ```
 
 Then open http://localhost:8000 in your browser.
+
+## How to Play
+
+1. Press **Space** to start the game
+2. Use **Arrow Keys** to move your ship
+3. Press **Space** to shoot lasers
+4. Destroy aliens to earn points (+100 each)
+5. Avoid collisions with aliens
+6. Game over when all 3 lives are lost
+
+## Controls
+
+| Action | Input |
+|--------|-------|
+| Start Game | Space |
+| Move Ship | Arrow Keys (Up/Down/Left/Right) |
+| Shoot | Space |
+| Restart | Space (after game over) |
 
 ## Deployment
 
