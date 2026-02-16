@@ -134,11 +134,11 @@ function update() {
     enemies = enemies.filter(e => {
         e.y += e.speed;
         
-        // Bullet collision - check all bullets
+        // Bullet collision - check all bullets (larger hitbox)
         for (let i = bullets.length - 1; i >= 0; i--) {
             let b = bullets[i];
-            // Simple box collision
-            if (b.x > e.x && b.x < e.x + 30 && b.y > e.y && b.y < e.y + 30) {
+            // Larger collision area
+            if (Math.abs(b.x - (e.x + 15)) < 25 && Math.abs(b.y - (e.y + 15)) < 25) {
                 score += 100;
                 scoreEl.textContent = `Score: ${score}`;
                 bullets.splice(i, 1);
