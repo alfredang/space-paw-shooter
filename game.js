@@ -15,6 +15,50 @@ let stars = [];
 
 const keys = {};
 
+// Sound effects using Web Audio API
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    try {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        if (type === 'shoot') {
+            // Pew pew sound
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'hit') {
+            // Explosion sound
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'gameover') {
+            // Game over sound
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+    } catch(e) {
+        // Audio not supported
+    }
+}
+
 // Create stars
 for (let i = 0; i < 50; i++) {
     stars.push({
@@ -92,48 +136,40 @@ function drawStars() {
 function update() {
     if (!gameRunning || gameOver) return;
 
-    // Move stars
     stars.forEach(s => {
         s.y += s.speed;
         if (s.y > canvas.height) s.y = 0;
     });
 
-    // Player movement
     if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
     if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
     if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
     if (keys['ArrowDown'] && player.y < canvas.height - player.height) player.y += player.speed;
 
-    // Move bullets - store previous positions for better collision
     for (let i = bullets.length - 1; i >= 0; i--) {
         let prevY = bullets[i].y;
         bullets[i].y -= 12;
         
-        // Remove if off screen
         if (bullets[i].y < -10) {
             bullets.splice(i, 1);
             continue;
         }
         
-        // Check collision with ALL enemies
         for (let j = enemies.length - 1; j >= 0; j--) {
             let e = enemies[j];
             let b = bullets[i];
             
-            // Very generous collision detection
-            // Check if bullet is inside enemy circle (radius 20)
             let dx = b.x - (e.x + 15);
             let dy = b.y - (e.y + 15);
             let dist = Math.sqrt(dx * dx + dy * dy);
             
-            // Also check previous position (for fast bullets)
             let prevDy = prevY - (e.y + 15);
             let prevDist = Math.sqrt(dx * dx + prevDy * prevDy);
             
             if (dist < 35 || prevDist < 35) {
-                // Hit!
                 score += 100;
                 scoreEl.innerText = 'Score: ' + score;
+                playSound('hit');
                 enemies.splice(j, 1);
                 bullets.splice(i, 1);
                 break;
@@ -141,16 +177,13 @@ function update() {
         }
     }
 
-    // Spawn enemies
     if (Math.random() < 0.03) {
         enemies.push({ x: Math.random() * 340, y: -30, speed: Math.random() * 2 + 1 });
     }
 
-    // Move enemies
     for (let i = enemies.length - 1; i >= 0; i--) {
         enemies[i].y += enemies[i].speed;
         
-        // Remove if off screen
         if (enemies[i].y > canvas.height + 30) {
             enemies.splice(i, 1);
         }
@@ -192,10 +225,13 @@ document.addEventListener('keydown', e => {
         scoreEl.innerText = 'Score: 0';
         livesEl.innerText = '❤️❤️❤️';
         document.getElementById('instructions').innerText = 'Arrow keys to move, Space to shoot!';
+        // Resume audio context (needed for some browsers)
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         update();
     }
     if (e.key === ' ' && gameRunning && !gameOver) {
         bullets.push({ x: player.x + 20, y: player.y });
+        playSound('shoot');
     }
     if (e.key === ' ' && gameOver) {
         gameRunning = true;
@@ -209,6 +245,7 @@ document.addEventListener('keydown', e => {
         scoreEl.innerText = 'Score: 0';
         livesEl.innerText = '❤️❤️❤️';
         document.getElementById('instructions').innerText = 'Arrow keys to move, Space to shoot!';
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         update();
     }
 });
